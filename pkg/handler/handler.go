@@ -19,14 +19,14 @@ func NewHandler(services *service.Service) *Handler {
 }
 
 func (h Handler) InitRoutes() *gin.Engine {
-	router := gin.New()
+	router := gin.Default()
+	router.Use(middleware.CORSMiddleware())
 
 	app := router.Group("/")
 
 	handlerTimeout := os.Getenv("HANDLER_TIMEOUT")
 	ht, _ := strconv.ParseInt(handlerTimeout, 0, 64)
 
-	app.Use(middleware.CORSMiddleware())
 	app.Use(middleware.Timeout(time.Duration(ht)*time.Second, apperrors.NewServiceUnavailable()))
 
 	auth := app.Group("/auth")
