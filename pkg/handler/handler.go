@@ -2,6 +2,7 @@ package handler
 
 import (
 	"github.com/gin-gonic/gin"
+	cors "github.com/rs/cors/wrapper/gin"
 	apperrors "homeworkdeliverysystem/errors"
 	"homeworkdeliverysystem/pkg/handler/middleware"
 	"homeworkdeliverysystem/pkg/service"
@@ -26,7 +27,7 @@ func (h Handler) InitRoutes() *gin.Engine {
 	handlerTimeout := os.Getenv("HANDLER_TIMEOUT")
 	ht, _ := strconv.ParseInt(handlerTimeout, 0, 64)
 
-	app.Use(middleware.CORSMiddleware())
+	app.Use(cors.Default())
 	app.Use(middleware.Timeout(time.Duration(ht)*time.Second, apperrors.NewServiceUnavailable()))
 
 	auth := app.Group("/auth")
