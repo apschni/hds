@@ -45,6 +45,11 @@ func (h Handler) InitRoutes() *gin.Engine {
 			user.GET("/tasks", h.getAllTasks) //get all tasks ordered by deadline
 		}
 
+		group := api.Group("/group")
+		{
+			group.GET("/:number/subjects", h.GetSubjects) //get subjects by group name
+		}
+
 		tasks := api.Group("/tasks")
 		{
 			tasks.POST("/", middleware.Authority("teacher admin"), h.createTask) //create task

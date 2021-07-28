@@ -33,11 +33,16 @@ type Token interface {
 	ValidateRefreshToken(refreshTokenString string) (*model.RefreshToken, error)
 }
 
+type Group interface {
+	GetByNumber(ctx context.Context, number string) ([]string, error)
+}
+
 type Service struct {
 	Authorization
 	Task
 	User
 	Token
+	Group
 }
 
 func NewService(repository *repository.Repository) *Service {
@@ -56,5 +61,6 @@ func NewService(repository *repository.Repository) *Service {
 		Token:         NewTokenService(repository.Token, privKey, pubKey, secret, idExp, refreshExp),
 		User:          NewUserService(repository.User),
 		Task:          NewTaskService(repository.Task, repository.User),
+		Group:         NewGroupService(repository.Group),
 	}
 }

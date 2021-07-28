@@ -24,10 +24,15 @@ type Token interface {
 	DeleteUserRefreshToken(ctx context.Context, userID string) error
 }
 
+type Group interface {
+	GetSubjectsByGroupNumber(ctx context.Context, number string) ([]string, error)
+}
+
 type Repository struct {
 	Task
 	User
 	Token
+	Group
 }
 
 func NewRepository(dataSources *dataSources) *Repository {
@@ -35,5 +40,6 @@ func NewRepository(dataSources *dataSources) *Repository {
 		User:  NewUserRepository(dataSources.DB),
 		Token: NewTokenRepository(dataSources.RedisClient),
 		Task:  NewTaskRepository(dataSources.DB),
+		Group: NewGroupRepository(dataSources.DB),
 	}
 }
