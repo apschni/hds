@@ -9,6 +9,7 @@ import (
 	apperrors "homeworkdeliverysystem/errors"
 	"homeworkdeliverysystem/model"
 	"log"
+	"time"
 )
 
 type TaskRepository struct {
@@ -60,4 +61,16 @@ func (t *TaskRepository) GetByUserId(ctx context.Context, id uuid.UUID) ([]dto.G
 	}
 
 	return tasks, nil
+}
+
+func (t *TaskRepository) UpdateFileName(ctx context.Context, id string, fileName string) error {
+	query := "UPDATE tasks SET file_name=$1, updated_at=$2 WHERE id=$3"
+
+	_, err := t.db.ExecContext(ctx, query, fileName, time.Now(), id)
+	if err != nil {
+		log.Printf("Could not update task with id: %v. Reason: %v\n", id, err)
+		return apperrors.NewInternal()
+	}
+
+	return nil
 }

@@ -8,6 +8,7 @@ import (
 	"homeworkdeliverysystem/model"
 	"log"
 	"net/http"
+	"path"
 	"time"
 )
 
@@ -32,7 +33,7 @@ func (h *Handler) createTask(ctx *gin.Context) {
 		Closed:     false,
 		TeacherId:  user.Id,
 		StudentId:  req.StudentId,
-		FileName:   req.FileName,
+		FileName:   "",
 		CreatedAt:  now,
 		UpdatedAt:  now,
 		IsKeyPoint: req.IsKeyPoint,
@@ -41,7 +42,7 @@ func (h *Handler) createTask(ctx *gin.Context) {
 
 	id, err := h.services.Task.Create(c, task)
 	if err != nil {
-		log.Printf("Failed create task: %v\n", err.Error())
+		log.Printf("Failed to create task: %v\n", err.Error())
 		ctx.JSON(apperrors.Status(err), gin.H{
 			"error": err,
 		})
@@ -61,7 +62,7 @@ func (h *Handler) createTask(ctx *gin.Context) {
 	})
 }
 
-func (h *Handler) getAllTasks(ctx *gin.Context) {
+func (h *Handler) GetAllTasks(ctx *gin.Context) {
 	userFromContext, _ := ctx.Get("user")
 	user := userFromContext.(*model.User)
 
@@ -79,30 +80,51 @@ func (h *Handler) getAllTasks(ctx *gin.Context) {
 	})
 }
 
-func (h *Handler) answerTask(ctx *gin.Context) {
+func (h *Handler) UpdateTaskWithFile(ctx *gin.Context) {
+	req := &dto.UploadFileOnTaskReq{}
 
-}
+	formFile, err := ctx.FormFile("file")
+	if err != nil {
+		log.Printf("Failed to get file from form: %v\n", err.Error())
+		ctx.JSON(apperrors.Status(err), gin.H{
+			"error": err,
+		})
+		return
+	}
+	req.File = formFile
 
-func (h *Handler) updateWithFile(ctx *gin.Context) {
+	err = ctx.ShouldBindUri(&req)
+	if err != nil {
+		log.Printf("Failed to bind uri path params: %v\n", err.Error())
+		ctx.JSON(apperrors.Status(err), gin.H{
+			"error": err,
+		})
+		return
+	}
 
-}
+	fileId, _ := uuid.NewRandom()
 
-func (h *Handler) openTask(ctx *gin.Context) {
+	req.File.Filename = fileId.String() + "_" + req.File.Filename
 
-}
+	c := ctx.Request.Context()
 
-func (h *Handler) closeTask(ctx *gin.Context) {
+	err = h.services.Task.UpdateWithFile(c, req)
+	if err != nil {
+		log.Printf("Failed to update database with new filename: %v\n", err.Error())
+		ctx.JSON(apperrors.Status(err), gin.H{
+			"error": err,
+		})
+		return
+	}
 
-}
-
-func (h *Handler) approveTask(ctx *gin.Context) {
-
-}
-
-func (h *Handler) rateTask(ctx *gin.Context) {
-
-}
-
-func (h *Handler) getAllAnswers(ctx *gin.Context) {
-
+	dst := path.Join("./files/", req.File.Filename)
+	err = ctx.SaveUploadedFile(req.File, dst)
+	if err != nil {
+		log.Printf("Failed save file: %v\n", err.Error())
+		ctx.JSON(apperrors.Status(err), gin.H{
+			"error": err,
+		})
+		return
+	}
+	ctx.String(http.StatusOK, "File uploaded successfully")
 }

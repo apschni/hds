@@ -21,6 +21,7 @@ type Authorization interface {
 type Task interface {
 	Create(ctx context.Context, task *model.Task) (string, error)
 	GetByUserId(ctx context.Context, id uuid.UUID) ([]dto.GetTaskResp, error)
+	UpdateWithFile(ctx context.Context, req *dto.UploadFileOnTaskReq) error
 }
 
 type User interface {
