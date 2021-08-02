@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"path"
 	"path/filepath"
+	"strings"
 	"time"
 )
 
@@ -93,6 +94,17 @@ func (h *Handler) UpdateTaskWithFile(ctx *gin.Context) {
 		return
 	}
 	req.File = formFile
+
+	fileNameSlice := strings.Split(req.File.Filename, ".")
+
+	if fileNameSlice[len(fileNameSlice)-1] != "pdf" {
+		log.Printf("Failed to get file from form: unsupported media type.")
+		err := apperrors.NewUnsupportedMediaType("Only pdf file format supported.")
+		ctx.JSON(apperrors.Status(err), gin.H{
+			"error": err,
+		})
+		return
+	}
 
 	err = ctx.ShouldBindUri(&req)
 	if err != nil {
