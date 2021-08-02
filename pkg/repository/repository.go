@@ -3,13 +3,14 @@ package repository
 import (
 	"context"
 	"github.com/google/uuid"
+	"homeworkdeliverysystem/dto"
 	"homeworkdeliverysystem/model"
 	"time"
 )
 
 type Task interface {
 	Create(ctx context.Context, task model.Task) (string, error)
-	GetByUserId(ctx context.Context, id uuid.UUID) ([]model.Task, error)
+	GetByUserId(ctx context.Context, id uuid.UUID) ([]dto.GetTaskResp, error)
 }
 
 type User interface {

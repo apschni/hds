@@ -5,6 +5,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 	"github.com/lib/pq"
+	"homeworkdeliverysystem/dto"
 	apperrors "homeworkdeliverysystem/errors"
 	"homeworkdeliverysystem/model"
 	"log"
@@ -45,10 +46,12 @@ func (t *TaskRepository) Create(ctx context.Context, task model.Task) (string, e
 	return id.String(), nil
 }
 
-func (t *TaskRepository) GetByUserId(ctx context.Context, id uuid.UUID) ([]model.Task, error) {
-	var tasks []model.Task
+func (t *TaskRepository) GetByUserId(ctx context.Context, id uuid.UUID) ([]dto.GetTaskResp, error) {
+	var tasks []dto.GetTaskResp
 
-	query := "SELECT * FROM tasks WHERE student_id=$1 ORDER BY deadline"
+	query := "SELECT t.id, t.label, t.subject, u.full_name AS teacher, t.is_key_point AS keypoint," +
+		" t.points, t.closed AS completed, t.deadline " +
+		"FROM tasks t JOIN users u on u.id = t.teacher_id WHERE student_id=$1 ORDER BY deadline"
 
 	err := t.db.SelectContext(ctx, &tasks, query, id)
 	if err != nil {

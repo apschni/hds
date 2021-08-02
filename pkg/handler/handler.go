@@ -52,9 +52,9 @@ func (h Handler) InitRoutes() *gin.Engine {
 
 		tasks := api.Group("/tasks")
 		{
-			tasks.POST("/", middleware.Authority("teacher admin"), h.createTask) //create task
-			tasks.PATCH("/", h.updateWithFile)                                   //прикрепление файла к таске
-			tasks.POST("/:id/answer", h.answerTask)                              //прикрепить ответ на таску
+			tasks.POST("/", middleware.Authority(middleware.Teacher, middleware.Admin), h.createTask) //create task
+			tasks.PATCH("/", h.updateWithFile)                                                        //прикрепление файла к таске
+			tasks.POST("/:id/answer", h.answerTask)                                                   //прикрепить ответ на таску
 
 			task := api.Group("/:id")
 			{

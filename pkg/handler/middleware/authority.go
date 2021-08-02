@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func Authority(roles string) gin.HandlerFunc {
+func Authority(authorities ...string) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		userFromContext, exists := ctx.Get("user")
 
@@ -22,6 +22,11 @@ func Authority(roles string) gin.HandlerFunc {
 		}
 
 		userRole := userFromContext.(*model.User).Role
+
+		roles := ""
+		for _, authority := range authorities {
+			roles += authority
+		}
 
 		if !strings.Contains(roles, userRole) {
 			log.Printf("Request forbidden because user role {%s} not contained in roles: {%s}\n", userRole, roles)
