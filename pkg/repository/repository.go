@@ -12,6 +12,7 @@ type Task interface {
 	Create(ctx context.Context, task model.Task) (string, error)
 	GetByUserId(ctx context.Context, id uuid.UUID) ([]dto.GetTaskResp, error)
 	UpdateFileName(ctx context.Context, id string, fileName string) error
+	GetFileNameById(ctx context.Context, id string) (string, error)
 }
 
 type User interface {

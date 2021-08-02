@@ -18,7 +18,7 @@ func NewHandler(services *service.Service) *Handler {
 	return &Handler{services: services}
 }
 
-func (h Handler) InitRoutes() *gin.Engine {
+func (h *Handler) InitRoutes() *gin.Engine {
 	router := gin.Default()
 	router.Use(middleware.CORSMiddleware())
 
@@ -43,8 +43,12 @@ func (h Handler) InitRoutes() *gin.Engine {
 	{
 		user := api.Group("/user")
 		{
-			user.GET("/me", h.Me)             //get user that currently logged in
-			user.GET("/tasks", h.GetAllTasks) //get all tasks ordered by deadline
+			user.GET("/me", h.Me) //get user that currently logged in
+			userTasks := user.Group("/tasks")
+			{
+				userTasks.GET("/", h.GetAllTasks)     //get all tasks ordered by deadline
+				userTasks.GET("/:id/file", h.GetFile) //get file from task
+			}
 		}
 
 		group := api.Group("/group")
@@ -52,11 +56,11 @@ func (h Handler) InitRoutes() *gin.Engine {
 			group.GET("/:number/subjects", h.GetSubjects) //get subjects by group name
 		}
 
-		tasks := api.Group("/tasks")
+		tasks := api.Group("/tasks", middleware.Authority(middleware.Teacher, middleware.Admin))
 		{
-			tasks.POST("/", middleware.Authority(middleware.Teacher, middleware.Admin), h.createTask)                             //create task
-			tasks.POST("/:id/update-with-file", middleware.Authority(middleware.Teacher, middleware.Admin), h.UpdateTaskWithFile) //update task with file
-			//tasks.POST("/:id/answer", h.answerTask)                                                            //прикрепить ответ на таску
+			tasks.POST("/", h.createTask)                             //create task
+			tasks.POST("/:id/update-with-file", h.UpdateTaskWithFile) //update task with file
+			//tasks.POST("/:id/answer", h.answerTask)  //прикрепить ответ на таску
 
 			/*			task := api.Group("/:id")
 						{

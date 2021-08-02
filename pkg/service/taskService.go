@@ -37,3 +37,11 @@ func (t *TaskService) UpdateWithFile(ctx context.Context, req *dto.UploadFileOnT
 	}
 	return nil
 }
+
+func (t *TaskService) GetFileNameById(ctx context.Context, id string) (string, error) {
+	fileName, err := t.taskRepo.GetFileNameById(ctx, id)
+	if err != nil {
+		return "", err
+	}
+	return fileName, nil
+}

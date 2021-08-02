@@ -74,3 +74,17 @@ func (t *TaskRepository) UpdateFileName(ctx context.Context, id string, fileName
 
 	return nil
 }
+
+func (t *TaskRepository) GetFileNameById(ctx context.Context, id string) (string, error) {
+	var fileName string
+
+	query := "SELECT file_name FROM tasks WHERE id=$1 LIMIT 1"
+
+	err := t.db.GetContext(ctx, &fileName, query, id)
+	if err != nil {
+		log.Printf("Could not select a file name from task with id: %v. Reason: %v\n", id, err)
+		return "", apperrors.NewInternal()
+	}
+
+	return fileName, nil
+}

@@ -9,6 +9,7 @@ import (
 	"log"
 	"net/http"
 	"path"
+	"path/filepath"
 	"time"
 )
 
@@ -127,4 +128,27 @@ func (h *Handler) UpdateTaskWithFile(ctx *gin.Context) {
 		return
 	}
 	ctx.String(http.StatusOK, "File uploaded successfully")
+}
+
+func (h *Handler) GetFile(ctx *gin.Context) {
+	id := ctx.Param("id")
+
+	c := ctx.Request.Context()
+
+	fileName, err := h.services.Task.GetFileNameById(c, id)
+	if err != nil {
+		log.Printf("Failed to get task file: %v\n", err.Error())
+		ctx.JSON(apperrors.Status(err), gin.H{
+			"error": err,
+		})
+		return
+	}
+
+	targetPath := filepath.Join("./files/", fileName)
+
+	ctx.Header("Content-Description", "File Transfer")
+	ctx.Header("Content-Transfer-Encoding", "binary")
+	ctx.Header("Content-Disposition", "attachment; filename="+fileName)
+	ctx.Header("Content-Type", "application/octet-stream")
+	ctx.File(targetPath)
 }
