@@ -88,3 +88,27 @@ func (t *TaskRepository) GetFileNameById(ctx context.Context, id string) (string
 
 	return fileName, nil
 }
+
+func (t *TaskRepository) Open(ctx context.Context, id uuid.UUID) error {
+	query := "UPDATE tasks SET closed=false, updated_at=$1 WHERE id=$2"
+
+	_, err := t.db.ExecContext(ctx, query, time.Now(), id.String())
+	if err != nil {
+		log.Printf("Could not open id: %v. Reason: %v\n", id, err)
+		return err
+	}
+
+	return nil
+}
+
+func (t *TaskRepository) Close(ctx context.Context, id uuid.UUID) error {
+	query := "UPDATE tasks SET closed=true, updated_at=$1 WHERE id=$2"
+
+	_, err := t.db.ExecContext(ctx, query, time.Now(), id.String())
+	if err != nil {
+		log.Printf("Could not close id: %v. Reason: %v\n", id, err)
+		return err
+	}
+
+	return nil
+}

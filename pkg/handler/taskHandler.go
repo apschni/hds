@@ -164,3 +164,51 @@ func (h *Handler) GetFile(ctx *gin.Context) {
 	ctx.Header("Content-Type", "application/octet-stream")
 	ctx.File(targetPath)
 }
+
+func (h *Handler) OpenTask(ctx *gin.Context) {
+	id, err := uuid.Parse(ctx.Param("id"))
+	if err != nil {
+		log.Printf("Failed to parse id from request: %v\n", err.Error())
+		ctx.JSON(apperrors.Status(err), gin.H{
+			"error": err,
+		})
+		return
+	}
+
+	c := ctx.Request.Context()
+
+	err = h.services.Task.Open(c, id)
+	if err != nil {
+		log.Printf("Failed to open task: %v\n", err.Error())
+		ctx.JSON(apperrors.Status(err), gin.H{
+			"error": err,
+		})
+		return
+	}
+
+	ctx.Status(http.StatusOK)
+}
+
+func (h *Handler) CloseTask(ctx *gin.Context) {
+	id, err := uuid.Parse(ctx.Param("id"))
+	if err != nil {
+		log.Printf("Failed to parse id from request: %v\n", err.Error())
+		ctx.JSON(apperrors.Status(err), gin.H{
+			"error": err,
+		})
+		return
+	}
+
+	c := ctx.Request.Context()
+
+	err = h.services.Task.Close(c, id)
+	if err != nil {
+		log.Printf("Failed to close task: %v\n", err.Error())
+		ctx.JSON(apperrors.Status(err), gin.H{
+			"error": err,
+		})
+		return
+	}
+
+	ctx.Status(http.StatusOK)
+}

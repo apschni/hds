@@ -13,6 +13,8 @@ type Task interface {
 	GetByUserId(ctx context.Context, id uuid.UUID) ([]dto.GetTaskResp, error)
 	UpdateFileName(ctx context.Context, id string, fileName string) error
 	GetFileNameById(ctx context.Context, id string) (string, error)
+	Open(ctx context.Context, id uuid.UUID) error
+	Close(ctx context.Context, id uuid.UUID) error
 }
 
 type User interface {

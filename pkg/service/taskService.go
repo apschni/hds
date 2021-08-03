@@ -45,3 +45,11 @@ func (t *TaskService) GetFileNameById(ctx context.Context, id string) (string, e
 	}
 	return fileName, nil
 }
+
+func (t *TaskService) Open(ctx context.Context, id uuid.UUID) error {
+	return t.taskRepo.Open(ctx, id)
+}
+
+func (t *TaskService) Close(ctx context.Context, id uuid.UUID) error {
+	return t.taskRepo.Close(ctx, id)
+}
