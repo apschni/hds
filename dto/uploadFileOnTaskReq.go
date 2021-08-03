@@ -1,8 +1,11 @@
 package dto
 
-import "mime/multipart"
+import (
+	"github.com/lib/pq"
+	"mime/multipart"
+)
 
-type UploadFileOnTaskReq struct {
-	Id   string                `uri:"id" binding:"required"`
+type UpdateMultipleWithFileReq struct {
+	Ids  pq.StringArray        `json:"ids" binding:"required"`
 	File *multipart.FileHeader `form:"file" binding:"required"`
 }

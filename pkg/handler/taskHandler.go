@@ -82,8 +82,8 @@ func (h *Handler) GetAllTasks(ctx *gin.Context) {
 	})
 }
 
-func (h *Handler) UpdateTaskWithFile(ctx *gin.Context) {
-	req := &dto.UploadFileOnTaskReq{}
+func (h *Handler) UpdateMultipleWithFile(ctx *gin.Context) {
+	req := &dto.UpdateMultipleWithFileReq{}
 
 	formFile, err := ctx.FormFile("file")
 	if err != nil {
@@ -106,14 +106,13 @@ func (h *Handler) UpdateTaskWithFile(ctx *gin.Context) {
 		return
 	}
 
-	err = ctx.ShouldBindUri(&req)
-	if err != nil {
-		log.Printf("Failed to bind uri path params: %v\n", err.Error())
-		ctx.JSON(apperrors.Status(err), gin.H{
-			"error": err,
-		})
-		return
+	ids := ctx.QueryMap("ids")
+	idsSlice := make([]string, 0)
+	for _, id := range ids {
+		idsSlice = append(idsSlice, id)
 	}
+
+	req.Ids = idsSlice
 
 	fileId, _ := uuid.NewRandom()
 
@@ -121,7 +120,7 @@ func (h *Handler) UpdateTaskWithFile(ctx *gin.Context) {
 
 	c := ctx.Request.Context()
 
-	err = h.services.Task.UpdateWithFile(c, req)
+	err = h.services.Task.UpdateMultipleWithFile(c, req)
 	if err != nil {
 		log.Printf("Failed to update database with new filename: %v\n", err.Error())
 		ctx.JSON(apperrors.Status(err), gin.H{

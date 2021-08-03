@@ -30,12 +30,8 @@ func (t *TaskService) GetByUserId(ctx context.Context, id uuid.UUID) ([]dto.GetT
 	return tasks, nil
 }
 
-func (t *TaskService) UpdateWithFile(ctx context.Context, req *dto.UploadFileOnTaskReq) error {
-	err := t.taskRepo.UpdateFileName(ctx, req.Id, req.File.Filename)
-	if err != nil {
-		return err
-	}
-	return nil
+func (t *TaskService) UpdateMultipleWithFile(ctx context.Context, req *dto.UpdateMultipleWithFileReq) error {
+	return t.taskRepo.UpdateFileNameOnMultipleTasks(ctx, req.Ids, req.File.Filename)
 }
 
 func (t *TaskService) GetFileNameById(ctx context.Context, id string) (string, error) {

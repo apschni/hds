@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"github.com/google/uuid"
+	"github.com/lib/pq"
 	"homeworkdeliverysystem/dto"
 	"homeworkdeliverysystem/model"
 	"time"
@@ -11,7 +12,7 @@ import (
 type Task interface {
 	Create(ctx context.Context, task model.Task) (string, error)
 	GetByUserId(ctx context.Context, id uuid.UUID) ([]dto.GetTaskResp, error)
-	UpdateFileName(ctx context.Context, id string, fileName string) error
+	UpdateFileNameOnMultipleTasks(ctx context.Context, ids pq.StringArray, fileName string) error
 	GetFileNameById(ctx context.Context, id string) (string, error)
 	Open(ctx context.Context, id uuid.UUID) error
 	Close(ctx context.Context, id uuid.UUID) error

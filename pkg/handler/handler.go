@@ -59,14 +59,14 @@ func (h *Handler) InitRoutes() *gin.Engine {
 
 		tasks := api.Group("/tasks", middleware.Authority(middleware.Teacher, middleware.Admin))
 		{
-			tasks.POST("/", h.createTask) //create task
+			tasks.POST("/", h.createTask)                                      //create task
+			tasks.POST("/update-multiple-with-file", h.UpdateMultipleWithFile) //update tasks with file
 			//tasks.POST("/:id/answer", h.answerTask)  //прикрепить ответ на таску
 
 			task := tasks.Group("/:id")
 			{
-				task.POST("/update-with-file", h.UpdateTaskWithFile) //update task with file
-				task.POST("/open", h.OpenTask)                       //open task
-				task.POST("/close", h.CloseTask)                     //close task
+				task.POST("/open", h.OpenTask)   //open task
+				task.POST("/close", h.CloseTask) //close task
 				//task.POST("/approve", h.approveTask)  //аппрувнуть ответ и закрыть таску
 				//task.POST("/rate", h.rateTask)        //оценить таску поинтами
 				//task.GET("/answers", h.getAllAnswers) //получить все ответы на таску (в порядке их создания)

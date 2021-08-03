@@ -63,15 +63,16 @@ func (t *TaskRepository) GetByUserId(ctx context.Context, id uuid.UUID) ([]dto.G
 	return tasks, nil
 }
 
-func (t *TaskRepository) UpdateFileName(ctx context.Context, id string, fileName string) error {
+func (t *TaskRepository) UpdateFileNameOnMultipleTasks(ctx context.Context, ids pq.StringArray, fileName string) error {
 	query := "UPDATE tasks SET file_name=$1, updated_at=$2 WHERE id=$3"
 
-	_, err := t.db.ExecContext(ctx, query, fileName, time.Now(), id)
-	if err != nil {
-		log.Printf("Could not update task with id: %v. Reason: %v\n", id, err)
-		return apperrors.NewInternal()
+	for _, id := range ids {
+		_, err := t.db.ExecContext(ctx, query, fileName, time.Now(), id)
+		if err != nil {
+			log.Printf("Could not update tasks with ids: %v. Reason: %v\n", ids, err)
+			return err
+		}
 	}
-
 	return nil
 }
 
