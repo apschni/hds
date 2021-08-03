@@ -13,12 +13,12 @@ import (
 
 func main() {
 	if err := godotenv.Load(); err != nil {
-		log.Fatalf("error loading env variables: %s", err.Error())
+		log.Fatalf("Error loading env variables: %s", err.Error())
 	}
 
 	ds, err := repository.InitDS()
 	if err != nil {
-		log.Fatalf("failed to initialize db: %s", err.Error())
+		log.Fatalf("Failed to initialize db: %s", err.Error())
 	}
 
 	newRepository := repository.NewRepository(ds)
@@ -27,6 +27,6 @@ func main() {
 
 	srv := new(server.Server)
 	if err := srv.Run(os.Getenv("SERVER_PORT"), handlers.InitRoutes()); err != nil {
-		log.Fatalf("error occured while running http server: %s", err.Error())
+		log.Fatalf("Error occured while running http server: %s", err.Error())
 	}
 }

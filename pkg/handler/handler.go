@@ -53,7 +53,8 @@ func (h *Handler) InitRoutes() *gin.Engine {
 
 		group := api.Group("/group")
 		{
-			group.GET("/:number/subjects", h.GetSubjects) //get subjects by group name
+			group.GET("/:number/subjects", h.GetSubjects) //get subjects by group number
+			group.GET("/:number/students", h.GetStudents) //get students by group number
 		}
 
 		tasks := api.Group("/tasks", middleware.Authority(middleware.Teacher, middleware.Admin))

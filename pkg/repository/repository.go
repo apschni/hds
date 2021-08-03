@@ -19,6 +19,7 @@ type User interface {
 	Create(ctx context.Context, user model.User) (string, error)
 	FindByUsername(ctx context.Context, username string) (*model.User, error)
 	FindById(ctx context.Context, id uuid.UUID) (*model.User, error)
+	GetByGroupNumber(ctx context.Context, number string) ([]dto.GetStudentsResp, error)
 }
 
 type Token interface {

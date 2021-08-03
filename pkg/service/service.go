@@ -36,7 +36,8 @@ type Token interface {
 }
 
 type Group interface {
-	GetByNumber(ctx context.Context, number string) ([]string, error)
+	GetSubjectsByNumber(ctx context.Context, number string) ([]string, error)
+	GetStudentsByNumber(ctx context.Context, number string) ([]dto.GetStudentsResp, error)
 }
 
 type Service struct {
@@ -63,6 +64,6 @@ func NewService(repository *repository.Repository) *Service {
 		Token:         NewTokenService(repository.Token, privKey, pubKey, secret, idExp, refreshExp),
 		User:          NewUserService(repository.User),
 		Task:          NewTaskService(repository.Task, repository.User),
-		Group:         NewGroupService(repository.Group),
+		Group:         NewGroupService(repository.Group, repository.User),
 	}
 }

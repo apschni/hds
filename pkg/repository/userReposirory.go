@@ -5,6 +5,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 	"github.com/lib/pq"
+	"homeworkdeliverysystem/dto"
 	apperrors "homeworkdeliverysystem/errors"
 	"homeworkdeliverysystem/model"
 	"log"
@@ -59,4 +60,18 @@ func (u *UserRepository) FindByUsername(ctx context.Context, username string) (*
 		return user, apperrors.NewNotFound("username", username)
 	}
 	return user, nil
+}
+
+func (u *UserRepository) GetByGroupNumber(ctx context.Context, number string) ([]dto.GetStudentsResp, error) {
+	var students []dto.GetStudentsResp
+
+	query := "SELECT id, full_name, username FROM users WHERE group_number=$1 ORDER BY full_name"
+
+	err := u.db.SelectContext(ctx, &students, query, number)
+	if err != nil {
+		log.Printf("Unable to get user with group number: %v. Err: %v\n", number, err)
+		return students, apperrors.NewNotFound("group_number", number)
+	}
+
+	return students, nil
 }

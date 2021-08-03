@@ -2,17 +2,23 @@ package service
 
 import (
 	"context"
+	"homeworkdeliverysystem/dto"
 	"homeworkdeliverysystem/pkg/repository"
 )
 
 type GroupService struct {
-	repo repository.Group
+	groupRepo repository.Group
+	userRepo  repository.User
 }
 
-func NewGroupService(repo repository.Group) *GroupService {
-	return &GroupService{repo: repo}
+func NewGroupService(groupRepo repository.Group, userRepo repository.User) *GroupService {
+	return &GroupService{groupRepo: groupRepo, userRepo: userRepo}
 }
 
-func (g *GroupService) GetByNumber(ctx context.Context, number string) ([]string, error) {
-	return g.repo.GetSubjectsByGroupNumber(ctx, number)
+func (g *GroupService) GetSubjectsByNumber(ctx context.Context, number string) ([]string, error) {
+	return g.groupRepo.GetSubjectsByGroupNumber(ctx, number)
+}
+
+func (g *GroupService) GetStudentsByNumber(ctx context.Context, number string) ([]dto.GetStudentsResp, error) {
+	return g.userRepo.GetByGroupNumber(ctx, number)
 }
