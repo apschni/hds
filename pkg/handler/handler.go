@@ -22,7 +22,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 	router := gin.Default()
 	router.Use(middleware.CORSMiddleware())
 
-	router.MaxMultipartMemory = 8 << 20
+	//router.MaxMultipartMemory = 8 << 20
 
 	app := router.Group("/")
 
