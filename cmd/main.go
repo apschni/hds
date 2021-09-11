@@ -18,7 +18,7 @@ func main() {
 
 	ds, err := repository.InitDS()
 	if err != nil {
-		log.Fatalf("Failed to initialize db: %s", err.Error())
+		log.Fatalf("Failed to initialize dbs: %s", err.Error())
 	}
 
 	newRepository := repository.NewRepository(ds)
