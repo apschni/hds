@@ -22,8 +22,8 @@ func (t *TaskService) Create(ctx context.Context, task *model.Task) (string, err
 	return id, err
 }
 
-func (t *TaskService) GetByUserId(ctx context.Context, id uuid.UUID) ([]dto.GetTaskResp, error) {
-	tasks, err := t.taskRepo.GetByUserId(ctx, id)
+func (t *TaskService) GetByUserId(ctx context.Context, category_id string, subjects_ids []string) ([]dto.GetTaskResp, error) {
+	tasks, err := t.taskRepo.GetByUserId(ctx, category_id, subjects_ids)
 	if err != nil {
 		return nil, err
 	}

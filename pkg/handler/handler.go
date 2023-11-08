@@ -44,11 +44,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		user := api.Group("/user")
 		{
 			user.GET("/me", h.Me) //get user that currently logged in
-			userTasks := user.Group("/tasks")
-			{
-				userTasks.GET("/", h.GetAllTasks)     //get all tasks ordered by deadline
-				userTasks.GET("/:id/file", h.GetFile) //get file from task
-			}
+
 		}
 
 		group := api.Group("/group")
@@ -57,10 +53,22 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			group.GET("/:number/students", h.GetStudents) //get students by group number
 		}
 
+		category := api.Group("/category")
+		{
+			category.GET("/", h.GetCategories)
+		}
+		subject := api.Group("/subject")
+		{
+			subject.GET("/", h.GetAllSubjects)
+		}
+
 		tasks := api.Group("/tasks", middleware.Authority(middleware.Teacher, middleware.Admin))
 		{
-			tasks.POST("/", h.createTask)                                      //create task
+			tasks.POST("/", h.createTask)
+			tasks.GET("/", h.GetAllTasks) //get all tasks ordered by deadline
+
 			tasks.POST("/update-multiple-with-file", h.UpdateMultipleWithFile) //update tasks with file
+			// (NOT TESTED)
 			//tasks.POST("/:id/answer", h.answerTask)  //прикрепить ответ на таску
 
 			task := tasks.Group("/:id")

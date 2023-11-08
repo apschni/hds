@@ -8,6 +8,8 @@ import (
 type CreateTaskReq struct {
 	Label      string    `json:"label" binding:"required"`
 	Subject    string    `json:"subject" binding:"required"`
+	CategoryId uuid.UUID `json:"category_id" db:"category_id"`
+	SubjectId  uuid.UUID `json:"subject_id" db:"subject_id"`
 	Text       string    `json:"text"`
 	Deadline   time.Time `json:"deadline" binding:"required"`
 	Points     int       `json:"points"`

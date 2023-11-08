@@ -21,8 +21,7 @@ func InitDS() (*dataSources, error) {
 	pgUser := os.Getenv("PG_USER")
 	pgPassword := os.Getenv("PG_PASSWORD")
 	pgDB := os.Getenv("PG_DB")
-	pgSSL := os.Getenv("PG_SSL")
-	pgConnString := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s", pgHost, pgPort, pgUser, pgPassword, pgDB, pgSSL)
+	pgConnString := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", pgHost, pgPort, pgUser, pgPassword, pgDB)
 
 	log.Printf("Connecting to Postgresql\n")
 	db, err := sqlx.Connect("postgres", pgConnString)

@@ -64,3 +64,31 @@ func (h *Handler) GetStudents(ctx *gin.Context) {
 		"students": students,
 	})
 }
+
+func (h *Handler) GetCategories(ctx *gin.Context) {
+	categories, err := h.services.Category.GetCategoriesS(ctx)
+	if err != nil {
+		log.Printf("Failed to get categories: %v\n", err.Error())
+		ctx.JSON(apperrors.Status(err), gin.H{
+			"error": err,
+		})
+		return
+	}
+	ctx.JSON(http.StatusOK, gin.H{
+		"categories": categories,
+	})
+}
+
+func (h *Handler) GetAllSubjects(ctx *gin.Context) {
+	subjects, err := h.services.Category.GetSubjectsS(ctx)
+	if err != nil {
+		log.Printf("Failed to get subjects: %v\n", err.Error())
+		ctx.JSON(apperrors.Status(err), gin.H{
+			"error": err,
+		})
+		return
+	}
+	ctx.JSON(http.StatusOK, gin.H{
+		"subjects": subjects,
+	})
+}

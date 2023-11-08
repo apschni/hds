@@ -29,6 +29,8 @@ func (h *Handler) createTask(ctx *gin.Context) {
 	task := &model.Task{
 		Label:      req.Label,
 		Subject:    req.Subject,
+		CategoryId: req.CategoryId,
+		SubjectId:  req.SubjectId,
 		Text:       req.Text,
 		Deadline:   req.Deadline,
 		Points:     req.Points,
@@ -65,12 +67,13 @@ func (h *Handler) createTask(ctx *gin.Context) {
 }
 
 func (h *Handler) GetAllTasks(ctx *gin.Context) {
-	userFromContext, _ := ctx.Get("user")
-	user := userFromContext.(*model.User)
+	var req dto.GetTaskByReq
+	if err := ctx.BindJSON(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
-	c := ctx.Request.Context()
-
-	tasks, err := h.services.Task.GetByUserId(c, user.Id)
+	tasks, err := h.services.Task.GetByUserId(ctx.Request.Context(), req.CategoryId, req.SubjectIds)
 	if err != nil {
 		ctx.JSON(apperrors.Status(err), gin.H{
 			"error": err,

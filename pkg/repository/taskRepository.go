@@ -47,16 +47,16 @@ func (t *TaskRepository) Create(ctx context.Context, task model.Task) (string, e
 	return id.String(), nil
 }
 
-func (t *TaskRepository) GetByUserId(ctx context.Context, id uuid.UUID) ([]dto.GetTaskResp, error) {
+func (t *TaskRepository) GetByUserId(ctx context.Context, category_id string, subjects_ids []string) ([]dto.GetTaskResp, error) {
 	var tasks []dto.GetTaskResp
 
-	query := "SELECT t.id, t.label, t.subject, u.full_name AS teacher, t.is_key_point AS keypoint," +
+	query := "SELECT t.id, t.label, t.subject_id, t.is_key_point AS keypoint," +
 		" t.points, t.closed AS completed, t.deadline " +
-		"FROM tasks t JOIN users u on u.id = t.teacher_id WHERE student_id=$1 ORDER BY deadline"
+		"FROM tasks as t WHERE (t.category_id=$1 and t.subject_id = any($2))"
 
-	err := t.db.SelectContext(ctx, &tasks, query, id)
+	err := t.db.SelectContext(ctx, &tasks, query, category_id, pq.Array(subjects_ids))
 	if err != nil {
-		log.Printf("Could not select a task with student_id: %v. Reason: %v\n", id, err)
+		log.Printf("Could not select a task with category_id: %v subject_ids: %v. Reason: %v\n", category_id, subjects_ids, err)
 		return nil, apperrors.NewInternal()
 	}
 

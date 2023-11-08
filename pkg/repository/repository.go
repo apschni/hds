@@ -11,7 +11,7 @@ import (
 
 type Task interface {
 	Create(ctx context.Context, task model.Task) (string, error)
-	GetByUserId(ctx context.Context, id uuid.UUID) ([]dto.GetTaskResp, error)
+	GetByUserId(ctx context.Context, category_id string, subjects_ids []string) ([]dto.GetTaskResp, error)
 	UpdateFileNameOnMultipleTasks(ctx context.Context, ids pq.StringArray, fileName string) error
 	GetFileNameById(ctx context.Context, id string) (string, error)
 	Open(ctx context.Context, id uuid.UUID) error
@@ -35,18 +35,25 @@ type Group interface {
 	GetSubjectsByGroupNumber(ctx context.Context, number string) ([]string, error)
 }
 
+type Category interface {
+	GetCategoriesAll(ctx context.Context) ([]model.Category, error)
+	GetSubjectsAll(ctx context.Context) ([]model.Subject, error)
+}
+
 type Repository struct {
 	Task
 	User
 	Token
 	Group
+	Category
 }
 
 func NewRepository(dataSources *dataSources) *Repository {
 	return &Repository{
-		User:  NewUserRepository(dataSources.DB),
-		Token: NewTokenRepository(dataSources.RedisClient),
-		Task:  NewTaskRepository(dataSources.DB),
-		Group: NewGroupRepository(dataSources.DB),
+		User:     NewUserRepository(dataSources.DB),
+		Token:    NewTokenRepository(dataSources.RedisClient),
+		Task:     NewTaskRepository(dataSources.DB),
+		Group:    NewGroupRepository(dataSources.DB),
+		Category: NewCategoryRepository(dataSources.DB),
 	}
 }

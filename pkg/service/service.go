@@ -20,7 +20,7 @@ type Authorization interface {
 
 type Task interface {
 	Create(ctx context.Context, task *model.Task) (string, error)
-	GetByUserId(ctx context.Context, id uuid.UUID) ([]dto.GetTaskResp, error)
+	GetByUserId(ctx context.Context, category_id string, subjects_ids []string) ([]dto.GetTaskResp, error)
 	UpdateMultipleWithFile(ctx context.Context, req *dto.UpdateMultipleWithFileReq) error
 	GetFileNameById(ctx context.Context, id string) (string, error)
 	Open(ctx context.Context, id uuid.UUID) error
@@ -42,12 +42,18 @@ type Group interface {
 	GetStudentsByNumber(ctx context.Context, number string) ([]dto.GetStudentsResp, error)
 }
 
+type Category interface {
+	GetCategoriesS(ctx context.Context) ([]model.Category, error)
+	GetSubjectsS(ctx context.Context) ([]model.Subject, error)
+}
+
 type Service struct {
 	Authorization
 	Task
 	User
 	Token
 	Group
+	Category
 }
 
 func NewService(repository *repository.Repository) *Service {
@@ -67,5 +73,6 @@ func NewService(repository *repository.Repository) *Service {
 		User:          NewUserService(repository.User),
 		Task:          NewTaskService(repository.Task, repository.User),
 		Group:         NewGroupService(repository.Group, repository.User),
+		Category:      NewCategoryService(repository.Category),
 	}
 }
