@@ -27,20 +27,22 @@ func (h *Handler) createTask(ctx *gin.Context) {
 	now := time.Now()
 
 	task := &model.Task{
-		Label:      req.Label,
-		Subject:    req.Subject,
-		CategoryId: req.CategoryId,
-		SubjectId:  req.SubjectId,
-		Text:       req.Text,
-		Deadline:   req.Deadline,
-		Points:     req.Points,
-		Closed:     false,
-		TeacherId:  user.Id,
-		StudentId:  req.StudentId,
-		FileName:   "",
-		CreatedAt:  now,
-		UpdatedAt:  now,
-		IsKeyPoint: req.IsKeyPoint,
+		Label:          req.Label,
+		Subject:        req.Subject,
+		CategoryId:     req.CategoryId,
+		SubjectId:      req.SubjectId,
+		Text:           req.Text,
+		Deadline:       req.Deadline,
+		Points:         req.Points,
+		VariableAnswer: req.VariableAnswer,
+		Answer:         req.Answer,
+		Closed:         false,
+		TeacherId:      user.Id,
+		StudentId:      req.StudentId,
+		FileName:       "",
+		CreatedAt:      now,
+		UpdatedAt:      now,
+		IsKeyPoint:     req.IsKeyPoint,
 	}
 	c := ctx.Request.Context()
 
@@ -213,4 +215,25 @@ func (h *Handler) CloseTask(ctx *gin.Context) {
 	}
 
 	ctx.Status(http.StatusOK)
+}
+
+func (h *Handler) CheckAnswer(ctx *gin.Context) {
+	var req dto.CheckAnswer
+
+	if err := ctx.BindJSON(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	right, trueAnswer, err := h.services.Task.CheckAnswer(ctx.Request.Context(), req.TaskId, req.Answer)
+	if err != nil {
+		ctx.JSON(apperrors.Status(err), gin.H{
+			"error": err,
+		})
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"right":       right,
+		"true_answer": trueAnswer,
+	})
 }

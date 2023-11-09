@@ -16,6 +16,7 @@ type Task interface {
 	GetFileNameById(ctx context.Context, id string) (string, error)
 	Open(ctx context.Context, id uuid.UUID) error
 	Close(ctx context.Context, id uuid.UUID) error
+	CheckAnswer(ctx context.Context, id uuid.UUID, answer string) (bool, string, error)
 }
 
 type User interface {

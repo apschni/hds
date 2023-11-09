@@ -49,3 +49,7 @@ func (t *TaskService) Open(ctx context.Context, id uuid.UUID) error {
 func (t *TaskService) Close(ctx context.Context, id uuid.UUID) error {
 	return t.taskRepo.Close(ctx, id)
 }
+
+func (t *TaskService) CheckAnswer(ctx context.Context, id uuid.UUID, answer string) (bool, string, error) {
+	return t.taskRepo.CheckAnswer(ctx, id, answer)
+}

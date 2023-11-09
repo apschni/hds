@@ -65,7 +65,10 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		tasks := api.Group("/tasks", middleware.Authority(middleware.Teacher, middleware.Admin))
 		{
 			tasks.POST("/", h.createTask)
+
 			tasks.GET("/", h.GetAllTasks) //get all tasks ordered by deadline
+
+			tasks.GET("/check", h.CheckAnswer) //get all tasks ordered by deadline
 
 			tasks.POST("/update-multiple-with-file", h.UpdateMultipleWithFile) //update tasks with file
 			// (NOT TESTED)

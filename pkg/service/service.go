@@ -21,6 +21,7 @@ type Authorization interface {
 type Task interface {
 	Create(ctx context.Context, task *model.Task) (string, error)
 	GetByUserId(ctx context.Context, category_id string, subjects_ids []string) ([]dto.GetTaskResp, error)
+	CheckAnswer(ctx context.Context, id uuid.UUID, answer string) (bool, string, error)
 	UpdateMultipleWithFile(ctx context.Context, req *dto.UpdateMultipleWithFileReq) error
 	GetFileNameById(ctx context.Context, id string) (string, error)
 	Open(ctx context.Context, id uuid.UUID) error
