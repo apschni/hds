@@ -28,11 +28,11 @@ func (t *TaskRepository) Create(ctx context.Context, task model.Task) (string, e
 	}
 
 	query := "INSERT INTO tasks " +
-		"(id, label, text, deadline, points, closed, teacher_id, file_name, student_id, created_at, updated_at, is_key_point, category_id, subject_id, answer, variable_answer)" +
+		"(id, label, text, deadline, points, closed, teacher_id, file_name, student_id, created_at, updated_at, is_key_point, category_id, subject, answer, variable_answer)" +
 		" VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16) RETURNING id"
 
 	err = t.db.GetContext(ctx, &id, query, newUUID, task.Label, task.Text, task.Deadline, task.Points, task.Closed,
-		task.TeacherId, task.FileName, task.StudentId, task.CreatedAt, task.UpdatedAt, task.IsKeyPoint, task.CategoryId, task.SubjectId, task.Answer, pq.Array(task.VariableAnswer))
+		task.TeacherId, task.FileName, task.StudentId, task.CreatedAt, task.UpdatedAt, task.IsKeyPoint, task.CategoryId, task.Subject, task.Answer, pq.Array(task.VariableAnswer))
 
 	if err != nil {
 		if err, ok := err.(*pq.Error); ok && err.Code.Name() == "unique_violation" {
@@ -50,9 +50,9 @@ func (t *TaskRepository) Create(ctx context.Context, task model.Task) (string, e
 func (t *TaskRepository) GetByUserId(ctx context.Context, category_id string, subjects_ids []string) ([]dto.GetTaskResp, error) {
 	var tasks []dto.GetTaskResp
 
-	query := "SELECT t.id, t.label, t.subject_id, t.category_id, t.is_key_point AS keypoint," +
+	query := "SELECT t.id, t.label, t.subject, t.category_id, t.is_key_point AS keypoint," +
 		" t.points, t.closed AS completed, t.deadline " +
-		"FROM tasks as t WHERE (t.category_id=$1 and t.subject_id = any($2))"
+		"FROM tasks as t WHERE (t.category_id=$1 and t.subject = any($2))"
 
 	err := t.db.SelectContext(ctx, &tasks, query, category_id, pq.Array(subjects_ids))
 	if err != nil {

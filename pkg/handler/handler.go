@@ -47,19 +47,13 @@ func (h *Handler) InitRoutes() *gin.Engine {
 
 		}
 
-		group := api.Group("/group")
-		{
-			group.GET("/:number/subjects", h.GetSubjects) //get subjects by group number
-			group.GET("/:number/students", h.GetStudents) //get students by group number
-		}
-
 		category := api.Group("/category")
 		{
 			category.GET("/", h.GetCategories)
 		}
 		subject := api.Group("/subject")
 		{
-			subject.GET("/", h.GetAllSubjects)
+			subject.GET("/", h.GetSubjectsByCategoryID)
 		}
 
 		tasks := api.Group("/tasks", middleware.Authority(middleware.Teacher, middleware.Admin))
@@ -70,18 +64,18 @@ func (h *Handler) InitRoutes() *gin.Engine {
 
 			tasks.GET("/check", h.CheckAnswer) //get all tasks ordered by deadline
 
-			tasks.POST("/update-multiple-with-file", h.UpdateMultipleWithFile) //update tasks with file
+			//tasks.POST("/update-multiple-with-file", h.UpdateMultipleWithFile) //update tasks with file
 			// (NOT TESTED)
 			//tasks.POST("/:id/answer", h.answerTask)  //прикрепить ответ на таску
 
-			task := tasks.Group("/:id")
-			{
-				task.POST("/open", h.OpenTask)   //open task
-				task.POST("/close", h.CloseTask) //close task
-				//task.POST("/approve", h.approveTask)  //аппрувнуть ответ и закрыть таску
-				//task.POST("/rate", h.rateTask)        //оценить таску поинтами
-				//task.GET("/answers", h.getAllAnswers) //получить все ответы на таску (в порядке их создания)
-			}
+			//task := tasks.Group("/:id")
+			//{
+			//task.POST("/open", h.OpenTask)   //open task
+			//task.POST("/close", h.CloseTask) //close task
+			//task.POST("/approve", h.approveTask)  //аппрувнуть ответ и закрыть таску
+			//task.POST("/rate", h.rateTask)        //оценить таску поинтами
+			//task.GET("/answers", h.getAllAnswers) //получить все ответы на таску (в порядке их создания)
+			//}
 		}
 	}
 

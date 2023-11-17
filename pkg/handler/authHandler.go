@@ -18,11 +18,10 @@ func (h *Handler) SignUp(ctx *gin.Context) {
 	}
 
 	u := &model.User{
-		FullName:    req.FullName,
-		GroupNumber: req.GroupNumber,
-		Username:    req.Username,
-		Password:    req.Password,
-		Role:        "user",
+		FullName: req.FullName,
+		Username: req.Username,
+		Password: req.Password,
+		Role:     "user",
 	}
 
 	c := ctx.Request.Context()

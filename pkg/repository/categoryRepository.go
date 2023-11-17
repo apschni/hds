@@ -2,7 +2,9 @@ package repository
 
 import (
 	"context"
+	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
+	"homeworkdeliverysystem/dto"
 	"homeworkdeliverysystem/errors"
 	"homeworkdeliverysystem/model"
 )
@@ -27,14 +29,14 @@ func (g *CategoryRepository) GetCategoriesAll(ctx context.Context) ([]model.Cate
 	return subjects, nil
 }
 
-func (g *CategoryRepository) GetSubjectsAll(ctx context.Context) ([]model.Subject, error) {
-	var subjects []model.Subject
+func (g *CategoryRepository) GetSubjectsAll(ctx context.Context, category_id uuid.UUID) (dto.GetSubjFromCategory, error) {
+	var subjects dto.GetSubjFromCategory
 
-	query := "SELECT * FROM subjects"
+	query := "SELECT subjects FROM categories where categories.id = $1"
 
-	err := g.db.SelectContext(ctx, &subjects, query)
+	err := g.db.GetContext(ctx, &subjects, query, category_id)
 	if err != nil {
-		return nil, errors.NewInternal()
+		return subjects, errors.NewInternal()
 	}
 	return subjects, nil
 }

@@ -2,6 +2,8 @@ package service
 
 import (
 	"context"
+	"github.com/google/uuid"
+	"homeworkdeliverysystem/dto"
 	"homeworkdeliverysystem/model"
 	"homeworkdeliverysystem/pkg/repository"
 )
@@ -18,6 +20,6 @@ func (g *CategoryService) GetCategoriesS(ctx context.Context) ([]model.Category,
 	return g.categoryRepo.GetCategoriesAll(ctx)
 }
 
-func (g *CategoryService) GetSubjectsS(ctx context.Context) ([]model.Subject, error) {
-	return g.categoryRepo.GetSubjectsAll(ctx)
+func (g *CategoryService) GetSubjectsS(ctx context.Context, id uuid.UUID) (dto.GetSubjFromCategory, error) {
+	return g.categoryRepo.GetSubjectsAll(ctx, id)
 }

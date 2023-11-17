@@ -35,9 +35,9 @@ func (u *UserRepository) Create(ctx context.Context, user model.User) (string, e
 	if err != nil {
 		return "", apperrors.NewInternal()
 	}
-	query := "INSERT INTO users (id, full_name, group_number, username, password_hash, role) " +
-		"VALUES ($1, $2, $3, $4, $5, $6) RETURNING id"
-	err = u.db.GetContext(ctx, &id, query, newUUID, user.FullName, user.GroupNumber, user.Username, user.Password, user.Role)
+	query := "INSERT INTO users (id, full_name, username, password_hash, role) " +
+		"VALUES ($1, $2, $3, $4, $5) RETURNING id"
+	err = u.db.GetContext(ctx, &id, query, newUUID, user.FullName, user.Username, user.Password, user.Role)
 	if err != nil {
 		if err, ok := err.(*pq.Error); ok && err.Code.Name() == "unique_violation" {
 			log.Printf("Could not create a user with username: %v. Reason: %v\n", user.Username, err.Code.Name())

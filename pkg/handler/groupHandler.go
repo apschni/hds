@@ -79,8 +79,14 @@ func (h *Handler) GetCategories(ctx *gin.Context) {
 	})
 }
 
-func (h *Handler) GetAllSubjects(ctx *gin.Context) {
-	subjects, err := h.services.Category.GetSubjectsS(ctx)
+func (h *Handler) GetSubjectsByCategoryID(ctx *gin.Context) {
+	var req dto.CategoryID
+
+	if err := ctx.BindJSON(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	subjects, err := h.services.Category.GetSubjectsS(ctx, req.ID)
 	if err != nil {
 		log.Printf("Failed to get subjects: %v\n", err.Error())
 		ctx.JSON(apperrors.Status(err), gin.H{
@@ -89,6 +95,6 @@ func (h *Handler) GetAllSubjects(ctx *gin.Context) {
 		return
 	}
 	ctx.JSON(http.StatusOK, gin.H{
-		"subjects": subjects,
+		"result": subjects,
 	})
 }

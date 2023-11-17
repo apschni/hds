@@ -38,7 +38,7 @@ type Group interface {
 
 type Category interface {
 	GetCategoriesAll(ctx context.Context) ([]model.Category, error)
-	GetSubjectsAll(ctx context.Context) ([]model.Subject, error)
+	GetSubjectsAll(ctx context.Context, id uuid.UUID) (dto.GetSubjFromCategory, error)
 }
 
 type Repository struct {

@@ -7,7 +7,8 @@ CREATE TABLE groups
 CREATE TABLE categories
 (
     id    uuid PRIMARY KEY,
-    label VARCHAR(255) NOT NULL
+    label VARCHAR(255) NOT NULL,
+    subjects VARCHAR(255)[]
 );
 
 CREATE TABLE subjects
@@ -62,6 +63,3 @@ CREATE TABLE answers
     created_at TIMESTAMP not null,
     FOREIGN KEY (task_id) REFERENCES tasks (id)
 );
-
-INSERT INTO groups
-VALUES (1, '{Algebra, Geometry, Math, Alch}')

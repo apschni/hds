@@ -45,7 +45,7 @@ type Group interface {
 
 type Category interface {
 	GetCategoriesS(ctx context.Context) ([]model.Category, error)
-	GetSubjectsS(ctx context.Context) ([]model.Subject, error)
+	GetSubjectsS(ctx context.Context, id uuid.UUID) (dto.GetSubjFromCategory, error)
 }
 
 type Service struct {

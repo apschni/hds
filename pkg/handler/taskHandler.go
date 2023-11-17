@@ -30,7 +30,6 @@ func (h *Handler) createTask(ctx *gin.Context) {
 		Label:          req.Label,
 		Subject:        req.Subject,
 		CategoryId:     req.CategoryId,
-		SubjectId:      req.SubjectId,
 		Text:           req.Text,
 		Deadline:       req.Deadline,
 		Points:         req.Points,
